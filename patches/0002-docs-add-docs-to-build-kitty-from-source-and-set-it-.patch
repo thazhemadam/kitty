@@ -1,0 +1,45 @@
+From 7bbad43613f01ef4e78492263e11d05977020764 Mon Sep 17 00:00:00 2001
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Date: Thu, 6 Nov 2025 19:34:32 +0530
+Subject: [PATCH] docs: add docs to build kitty from source and set it up on
+ macOS
+
+Add the necessary instructions and commands that can be easily
+copy-pasted for building kitty from source and setting it up in macOS.
+---
+ README.asciidoc | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/README.asciidoc b/README.asciidoc
+index f4ba68a5e..b95862290 100644
+--- a/README.asciidoc
++++ b/README.asciidoc
+@@ -8,6 +8,25 @@ image:https://github.com/kovidgoyal/kitty/workflows/CI/badge.svg["Build status",
+
+ https://sw.kovidgoyal.net/kitty/faq/[Frequently Asked Questions]
+
++Building kitty from source for macOS:
++
++```
++# Build kitty
++./dev.sh deps
++make clean && ./dev.sh build
++
++# If you haven't already done so, create a self-signed certificate first.
++# 1. Open `Keychain Access`
++# 2. Choose `Certificate Assistant (from the Menu bar) > Create Certificate`
++# 3. Enter a name, e.g., `kitty-patched-build`
++# 4. Set "Certificate Type" to "Code Signing"
++# Now, you have a newly created self-signed certificate, named `kitty-patched-build`.
++
++# Sign kitty and add it to `/Applications`
++codesign --force --sign kitty-patched-build kitty/launcher/kitty.app
++cp -R kitty/launcher/kitty.app /Applications/
++```
++
+ To ask other questions about kitty usage, use either the https://github.com/kovidgoyal/kitty/discussions/[discussions on GitHub] or the
+ https://www.reddit.com/r/KittyTerminal[Reddit community]
+
+--
+2.50.1 (Apple Git-155)
+
