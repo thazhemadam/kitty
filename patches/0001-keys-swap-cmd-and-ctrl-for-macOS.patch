@@ -1,0 +1,116 @@
+From da006967ebe3d605f17aa8b386961ea73f4e48f6 Mon Sep 17 00:00:00 2001
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Date: Wed, 15 Oct 2025 11:28:23 +0530
+Subject: [PATCH] keys: swap `cmd` and `ctrl` for macOS
+
+---
+ gen/key_constants.py |  8 ++++----
+ glfw/cocoa_window.m  | 28 ++++++++++++++--------------
+ 2 files changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/gen/key_constants.py b/gen/key_constants.py
+index 7bf9a90d8..119eac65b 100755
+--- a/gen/key_constants.py
++++ b/gen/key_constants.py
+@@ -113,15 +113,15 @@
+ raise_volume                XF86AudioRaiseVolume        -      -
+ mute_volume                 XF86AudioMute               -      -
+ left_shift                  Shift_L                     0x38   -
+-left_control                Control_L                   0x3B   -
++left_control                Super_L                     0x3B   -
+ left_alt                    Alt_L                       0x3A   -
+-left_super                  Super_L                     0x37   -
++left_super                  Control_L                   0x37   -
+ left_hyper                  Hyper_L                     -      -
+ left_meta                   Meta_L                      -      -
+ right_shift                 Shift_R                     0x3C   -
+-right_control               Control_R                   0x3E   -
++right_control               Super_R                     0x3E   -
+ right_alt                   Alt_R                       0x3D   -
+-right_super                 Super_R                     0x36   -
++right_super                 Control_R                   0x36   -
+ right_hyper                 Hyper_R                     -      -
+ right_meta                  Meta_R                      -      -
+ iso_level3_shift            ISO_Level3_Shift            -      -
+diff --git a/glfw/cocoa_window.m b/glfw/cocoa_window.m
+index b4c952f13..9a0ce9237 100644
+--- a/glfw/cocoa_window.m
++++ b/glfw/cocoa_window.m
+@@ -109,13 +109,13 @@
+         case 0x4c: return GLFW_FKEY_KP_ENTER;
+         case 0x51: return GLFW_FKEY_KP_EQUAL;
+         case 0x38: return GLFW_FKEY_LEFT_SHIFT;
+-        case 0x3b: return GLFW_FKEY_LEFT_CONTROL;
++        case 0x37: return GLFW_FKEY_LEFT_CONTROL;
+         case 0x3a: return GLFW_FKEY_LEFT_ALT;
+-        case 0x37: return GLFW_FKEY_LEFT_SUPER;
++        case 0x3b: return GLFW_FKEY_LEFT_SUPER;
+         case 0x3c: return GLFW_FKEY_RIGHT_SHIFT;
+-        case 0x3e: return GLFW_FKEY_RIGHT_CONTROL;
++        case 0x36: return GLFW_FKEY_RIGHT_CONTROL;
+         case 0x3d: return GLFW_FKEY_RIGHT_ALT;
+-        case 0x36: return GLFW_FKEY_RIGHT_SUPER;
++        case 0x3e: return GLFW_FKEY_RIGHT_SUPER;
+ /* end vk to functional */
+         default:
+             return 0;
+@@ -439,11 +439,11 @@ static void releaseMonitor(_GLFWwindow* window)
+     if (flags & NSEventModifierFlagShift)
+         mods |= GLFW_MOD_SHIFT;
+     if (flags & NSEventModifierFlagControl)
+-        mods |= GLFW_MOD_CONTROL;
++        mods |= GLFW_MOD_SUPER;
+     if (flags & NSEventModifierFlagOption)
+         mods |= GLFW_MOD_ALT;
+     if (flags & NSEventModifierFlagCommand)
+-        mods |= GLFW_MOD_SUPER;
++        mods |= GLFW_MOD_CONTROL;
+     if (flags & NSEventModifierFlagCapsLock)
+         mods |= GLFW_MOD_CAPS_LOCK;
+
+@@ -1073,11 +1073,11 @@ - (NSTextInputContext *)inputContext
+     if (flags & NSEventModifierFlagShift)
+         mods |= shiftKey;
+     if (flags & NSEventModifierFlagControl)
+-        mods |= controlKey;
++        mods |= cmdKey;
+     if (flags & NSEventModifierFlagOption)
+         mods |= optionKey;
+     if (flags & NSEventModifierFlagCommand)
+-        mods |= cmdKey;
++        mods |= controlKey;
+     if (flags & NSEventModifierFlagCapsLock)
+         mods |= alphaLock;
+
+@@ -1263,10 +1263,10 @@ - (void)flagsChanged:(NSEvent *)event
+         case GLFW_FKEY_CAPS_LOCK:
+             mod_name = "capslock";
+             action = modifierFlags & NSEventModifierFlagCapsLock ? GLFW_PRESS : GLFW_RELEASE; break;
+-        case GLFW_FKEY_LEFT_SUPER: action_for(super, NX_DEVICELCMDKEYMASK, NX_DEVICERCMDKEYMASK, NX_COMMANDMASK);
+-        case GLFW_FKEY_RIGHT_SUPER: action_for(super, NX_DEVICERCMDKEYMASK, NX_DEVICELCMDKEYMASK, NX_COMMANDMASK);
+-        case GLFW_FKEY_LEFT_CONTROL: action_for(ctrl, NX_DEVICELCTLKEYMASK, NX_DEVICERCTLKEYMASK, NX_CONTROLMASK);
+-        case GLFW_FKEY_RIGHT_CONTROL: action_for(ctrl, NX_DEVICERCTLKEYMASK, NX_DEVICELCTLKEYMASK, NX_CONTROLMASK);
++        case GLFW_FKEY_LEFT_CONTROL: action_for(super, NX_DEVICELCMDKEYMASK, NX_DEVICERCMDKEYMASK, NX_COMMANDMASK);
++        case GLFW_FKEY_RIGHT_CONTROL: action_for(super, NX_DEVICERCMDKEYMASK, NX_DEVICELCMDKEYMASK, NX_COMMANDMASK);
++        case GLFW_FKEY_LEFT_SUPER: action_for(ctrl, NX_DEVICELCTLKEYMASK, NX_DEVICERCTLKEYMASK, NX_CONTROLMASK);
++        case GLFW_FKEY_RIGHT_SUPER: action_for(ctrl, NX_DEVICERCTLKEYMASK, NX_DEVICELCTLKEYMASK, NX_CONTROLMASK);
+         case GLFW_FKEY_LEFT_ALT: action_for(alt, NX_DEVICELALTKEYMASK, NX_DEVICERALTKEYMASK, NX_ALTERNATEMASK);
+         case GLFW_FKEY_RIGHT_ALT: action_for(alt, NX_DEVICERALTKEYMASK, NX_DEVICELALTKEYMASK, NX_ALTERNATEMASK);
+         case GLFW_FKEY_LEFT_SHIFT: action_for(shift, NX_DEVICELSHIFTKEYMASK, NX_DEVICERSHIFTKEYMASK, NX_SHIFTMASK);
+@@ -3467,11 +3467,11 @@ GLFWAPI void glfwCocoaSetWindowChrome(GLFWwindow *w, unsigned int color, bool us
+     if (glfw_mods & GLFW_MOD_SHIFT)
+         *cocoa_mods |= NSEventModifierFlagShift;
+     if (glfw_mods & GLFW_MOD_CONTROL)
+-        *cocoa_mods |= NSEventModifierFlagControl;
++        *cocoa_mods |= NSEventModifierFlagCommand;
+     if (glfw_mods & GLFW_MOD_ALT)
+         *cocoa_mods |= NSEventModifierFlagOption;
+     if (glfw_mods & GLFW_MOD_SUPER)
+-        *cocoa_mods |= NSEventModifierFlagCommand;
++        *cocoa_mods |= NSEventModifierFlagControl;
+     if (glfw_mods & GLFW_MOD_CAPS_LOCK)
+         *cocoa_mods |= NSEventModifierFlagCapsLock;
+     return _glfwPlatformGetNativeKeyForKey(glfw_key);
+--
+2.50.1 (Apple Git-155)
+
