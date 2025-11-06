@@ -8,6 +8,25 @@ image:https://github.com/kovidgoyal/kitty/workflows/CI/badge.svg["Build status",
 
 https://sw.kovidgoyal.net/kitty/faq/[Frequently Asked Questions]
 
+Building kitty from source for macOS:
+
+```
+# Build kitty
+./dev.sh deps
+make clean && ./dev.sh build
+
+# If you haven't already done so, create a self-signed certificate first.
+# 1. Open `Keychain Access`
+# 2. Choose `Certificate Assistant (from the Menu bar) > Create Certificate`
+# 3. Enter a name, e.g., `kitty-patched-build`
+# 4. Set "Certificate Type" to "Code Signing"
+# Now, you have a newly created self-signed certificate, named `kitty-patched-build`.
+
+# Sign kitty and add it to `/Applications`
+codesign --force --sign kitty-patched-build kitty/launcher/kitty.app
+cp -R kitty/launcher/kitty.app /Applications/
+```
+
 To ask other questions about kitty usage, use either the https://github.com/kovidgoyal/kitty/discussions/[discussions on GitHub] or the
 https://www.reddit.com/r/KittyTerminal[Reddit community]
 
